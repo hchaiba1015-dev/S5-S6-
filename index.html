@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة القانون الخاص S5 & S6</title>
+    <!-- PWA Manifest Data URI -->
+    <link rel="manifest" href='data:application/manifest+json,{"name":"قانوني S5 & S6","short_name":"قانون S5-S6","description":"تطبيق شامل لمواد القانون الخاص الفصلين 5 و 6 ملخصات اختبارات ونوازل","start_url":"./","display":"standalone","background_color":"#0f172a","theme_color":"#3b82f6","orientation":"portrait","lang":"ar","dir":"rtl","categories":["education","books"],"icons":[{"src":"data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 512 512\'><rect width=\'512\' height=\'512\' rx=\'15%\' fill=\'%233b82f6\'/><text x=\'50%\' y=\'55%\' font-size=\'220\' fill=\'white\' font-family=\'Arial\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'middle\'>⚖️</text></svg>","sizes":"192x192 512x512","type":"image/svg+xml"}]}'>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+        body { font-family: 'Cairo', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        .hide { display: none !important; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased">
+    <!-- Header -->
+    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50 px-4 py-3 flex justify-between items-center shadow-md">
+        <div class="flex items-center space-x-3 space-x-reverse">
+            <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-blue-500/30">⚖️</div>
+            <div>
+                <h1 class="font-bold text-lg leading-tight text-white">قانوني S5 & S6</h1>
+                <p class="text-xs text-blue-400">كلية العلوم القانونية والاقتصادية والاجتماعية</p>
+            </div>
+        </div>
+        <button onclick="openApkGuide()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 transition shadow-md">
+            <i class="fa-solid fa-download"></i> دليل APK
+        </button>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-4xl w-full mx-auto p-4 space-y-6 pb-20">
+        <!-- Search & Filter Section -->
+        <div class="space-y-3">
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute right-4 top-3.5 text-slate-400"></i>
+                <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="ابحث في المواد، الملخصات، النوازل، والمصطلحات..." class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 pr-11 pl-4 text-sm text-white focus:outline-none focus:border-blue-500 transition shadow-inner">
+            </div>
+            
+            <div class="flex gap-2 overflow-x-auto pb-1 text-xs">
+                <button onclick="filterSemester('ALL')" class="sem-btn active px-4 py-2 rounded-lg bg-blue-600 text-white font-medium shrink-0 transition">الكل</button>
+                <button onclick="filterSemester('S5')" class="sem-btn px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 font-medium shrink-0 transition">الفصل الخامس (S5)</button>
+                <button onclick="filterSemester('S6')" class="sem-btn px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 font-medium shrink-0 transition">الفصل السادس (S6)</button>
+                <button onclick="showGlossary()" class="px-4 py-2 rounded-lg bg-indigo-900/50 border border-indigo-700 text-indigo-300 font-medium shrink-0 transition"><i class="fa-solid fa-book-bookmark ml-1"></i> معجم المصطلحات</button>
+            </div>
+        </div>
+
+        <!-- Dynamic View Container -->
+        <div id="appContainer" class="space-y-4">
+            <!-- Will be populated by JS -->
+        </div>
+    </main>
+
+    <!-- Modal / Guide for APK -->
+    <div id="apkModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hide">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="font-bold text-lg text-white flex items-center gap-2"><i class="fa-solid fa-rocket text-blue-500"></i> خطوات توليد وتحميل تطبيق APK</h3>
+                <button onclick="closeApkGuide()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="space-y-3 text-sm text-slate-300 leading-relaxed">
+                <p>1. بعد رفع هذا الكود على مشروعك في <b class="text-blue-400">GitHub</b> وتفعيل <b class="text-blue-400">GitHub Pages</b> للحصول على رابط موقعك المباشر.</p>
+                <p>2. توجه من متصفح هاتفك إلى موقع التحويل المجاني الشهير:</p>
+                <a href="https://www.pwabuilder.com" target="_blank" class="block bg-blue-600/20 border border-blue-500/50 p-3 rounded-xl text-center text-blue-400 font-bold hover:bg-blue-600/30 transition">🔗 PWABuilder.com</a>
+                <p>3. ألصق رابط موقعك في خانة البحث بالموقع واضغط <b class="text-white">Start</b> ثم اختر <b class="text-emerald-400">Generate Android Package (APK)</b> لتحميله فوراً وتثبيته على هاتفك!</p>
+            </div>
+            <button onclick="closeApkGuide()" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition">فهمت، شكراً</button>
+        </div>
+    </div>
+
+    <!-- Footer Navigation -->
+    <footer class="bg-slate-900 border-t border-slate-800 py-3 px-6 text-center text-xs text-slate-400">
+        جميع الحقوق محفوظة - منصة طلاب القانون الخاص S5 & S6 &copy; 2026
+    </footer>
+
+    <!-- Application JavaScript Logic -->
+    <script>
+        const database = {
+            S5: [
+                {
+                    id: "s5-1",
+                    title: "العقود المسماة (عقد البيع)",
+                    semester: "S5",
+                    summary: "البيع عقد بمقتضاه ينقل أحدهما للآخر ملكية شيء أو حق في مقابل ثمن يتعهد هذا الأخير بدفعه (الفصل 478 من ق.ل.ع). يعتبر عقداً رضائياً يكتمل بمجرد التراضي بين الطرفين.",
+                    example: "اتفق (أ) مع (ب) على شراء سيارة بمبلغ 50,000 درهم مع دفع عربون. التزام البائع هو تسليم السيارة وحيازتها، والتزام المشتري أداء الثمن.",
+                    qcm: {
+                        question: "هل يعتبر التسليم ركناً لإنعقاد عقد البيع في التشريع المغربي؟",
+                        options: ["نعم، هو عقد عيني لا ينعقد إلا بالتسليم", "لا، هو عقد رضائي يكتمل بمجرد التراضي وتوافق الإرادتين"],
+                        answer: 1,
+                        explanation: "حسب قانون الالتزامات والعقود المغربي، البيع عقد رضائي يتم بمجرد اتفاق البائع والمشتري على المبيع والثمن."
+                    }
+                },
+                {
+                    id: "s5-2",
+                    title: "صعوبات المقاولة",
+                    semester: "S5",
+                    summary: "تهدف مساطر وقاية ومعالجة صعوبات المقاولة (الكود التجاري) إلى اكتشاف الصعوبات الاقتصادية والمالية والاجتماعية مبكراً ومعالجتها عبر الوقاية الداخلية والخارجية أو التسوية القضائية.",
+                    example: "شركة تجارية واجهت اختلالاً في السيولة، فلجأت لرئيس المحكمة التجارية لتعيين وسيط أو مُصالح لإبرام اتفاق ودّي مع الدائنين.",
+                    qcm: {
+                        question: "ما هي الغاية الأساسية من مسطرة التسوية القضائية؟",
+                        options: ["تصفية أموال المقاولة فوراً وتوزيعها", "إقالة المسيرين وحل الشركة قضائياً", "استمرار نشاط المقاولة والحفاظ على مناصب الشغل وتسوية خصومها"],
+                        answer: 2,
+                        explanation: "التسوية القضائية تهدف بالأساس إلى إنقاذ المقاولة واستمرارية نشاطها الاقتصادي والاجتماعي."
+                    }
+                },
+                {
+                    id: "s5-3",
+                    title: "القانون الدولي الخاص",
+                    semester: "S5",
+                    summary: "فرع من فروع القانون الخاص ينظم العلاقات القانونية التي تتضمن عنصراً أجنبياً (جنسية، توطن، مكان إبرام العقد)، ويحدد الاختصاص القضائي الدولي وقوانين تنازع القوانين وتطبيق القانون الأجنبي.",
+                    example: "نزاع حول تركة هالك يحمل جنسية أجنبية توفي بالمغرب وترك عقارات، هنا يطرح تنازع القوانين وتنازع الاختصاص بين القاضي المغربي والأجنبي.",
+                    qcm: {
+                        question: "بماذا تعنى قاعدة الإسناد في القانون الدولي الخاص؟",
+                        options: ["بتحديد القاضي المختص فقط دون القانون الواجب التطبيق", "بتعيين القانون الداخلي أو الأجنبي الواجب التطبيق على النزاع ذي العنصر الأجنبي", "بتطبيق القانون الوطني دائماً مطلقاً"],
+                        answer: 1,
+                        explanation: "قاعدة الإسناد هي القاعدة الموجهة للقاضي لتعيين القانون المختص (وطني أو أجنبي) لحكم النزاع."
+                    }
+                }
+            ],
+            S6: [
+                {
+                    id: "s6-1",
+                    title: "المسطرة المدنية",
+                    semester: "S6",
+                    summary: "مجموعة القواعد القانونية التي تنظم كيفية اللجوء إلى القضاء المدني للمطالبة بالحقوق، وتحدد إجراءات التقاضي، والتحقيق، وإصدار الأحكام وتنفيذها.",
+                    example: "رفع مقال افتتاحى لدعوى أداء دين أمام المحكمة الابتدائية، مع تبليغ المدعى عليه بالطريقة القانونية.",
+                    qcm: {
+                        question: "من هو صاحب الحق في إثارة الدفع ببعدم الاختصاص النوعي؟",
+                        options: ["الأطراف فقط في جلسة الصلح", "يمكن للأطراف وللقاضي إثارته تلقائياً لأنه من النظام العام", "لا يمكن لأحد إثارته بعد الجلسة الأولى"],
+                        answer: 1,
+                        explanation: "الاختصاص النوعي يتعلق بالنظام العام، وبالتالي يحق للأطراف وللمحكمة إثارته في أي مرحلة كانت عليها الدعوى."
+                    }
+                },
+                {
+                    id: "s6-2",
+                    title: "المسطرة الجنائية",
+                    semester: "S6",
+                    summary: "قواعد تنظم البحث عن الجرائم، التحقيق فيها، محاكمة مرتكبيها، وتنفيذ العقوبات بغية حماية المجتمع وزجر الجريمة مع ضمان حقوق المتهم.",
+                    example: "إيقاف مشتبه فيه في حالة تلبس من طرف الشرطة القضائية ووضعها تحت التدابير الحراسة النظرية بإشراف النيابة العامة.",
+                    qcm: {
+                        question: "ما هي الجهة القضائية الأصلية التي تحيل عليها النيابة العامة الملفات في حالة التلبس الجناحي؟",
+                        options: ["محكمة الاستئناف (غرفة الجنايات)", "المحكمة الابتدائية (قسم الجنح التلبسية)", "المجلس الأعلى للسلطة القضائية"],
+                        answer: 1,
+                        explanation: "الجنح التلبسية تختص بالبت فيها المحكمة الابتدائية وفق مسطرة سريعة."
+                    }
+                },
+                {
+                    id: "s6-3",
+                    title: "الحقوق العينية",
+                    semester: "S6",
+                    summary: "مجموعة القواعد التي تقرر سلطة مباشرة لشخص على شيء مادي معين (مثل حق الملكية، الاستعمال، الارتفاق، والرهن الرسمي وفق مدونة حقوق العينية 39.08).",
+                    example: "تسجيل عقد شراء عقار محفيز في المحافظة العقارية لنقل الملكية بشكل نهائي وعينيا تجاه الغير.",
+                    qcm: {
+                        question: "متى تنتقل الملكية في العقارات المحفيظة حسب مدونة الحقوق العينية؟",
+                        options: ["بمجرد توقيع العقد العرفي بين البائع والمشتري", "بالتسجيل الفعلي في الرسم العقاري بالمحافظة العقارية", "بمجرد تسليم المفاتيح"],
+                        answer: 1,
+                        explanation: "العقارات المحفيظة لا تنتقل ملكيتها ولا تؤثر في الغير إلا من تاريخ التقييد والتسجيل في السجلات العقارية."
+                    }
+                }
+            ]
+        };
+
+        const glossary = [
+            { term: "العقد الرضائي (Contrat consensuel)", desc: "هو العقد الذي يتم ويطابق مجرد التراضي وتوافق الإرادتين دون الحاجة لشكل خاص." },
+            { term: "التسوية القضائية (Règlement judiciaire)", desc: "مسطرة قضائية تهدف لإنقاذ المقاولة التي تعاني صعوبات مع استمرار نشاطها وسداد ديونها." },
+            { term: "قاعدة الإسناد (Règle de rattachement / de conflit)", desc: "قاعدة قانونية ترشد القاضي لتحديد القانون الواجب التطبيق على نزاع ذي عنصر أجنبي." },
+            { term: "النظام العام (Ordre public)", desc: "مجموعة المصالح الأساسية السياسية والاجتماعية والاقتصادية للمجتمع والتي لا يجوز الاتفاق على مخالفة أحكامها الآمرة." },
+            { term: "التقييد بالسجل العقاري (Immatriculation / Inscription)", desc: "إجراء قانوني جوهري لتأسيس الحقوق العينية العقارية ونقلها في العقارات المحفيظة." }
+        ];
+
+        let currentFilter = 'ALL';
+        let searchQuery = '';
+
+        function renderApp() {
+            const container = document.getElementById('appContainer');
+            container.innerHTML = '';
+
+            // Check if viewing glossary
+            if (currentFilter === 'GLOSSARY') {
+                renderGlossaryView(container);
+                return;
+            }
+
+            let itemsToRender = [];
+            if (currentFilter === 'ALL' || currentFilter === 'S5') {
+                database.S5.forEach(item => itemsToRender.push(item));
+            }
+            if (currentFilter === 'ALL' || currentFilter === 'S6') {
+                database.S6.forEach(item => itemsToRender.push(item));
+            }
+
+            // Filter by search query
+            if (searchQuery.trim() !== '') {
+                const q = searchQuery.toLowerCase();
+                itemsToRender = itemsToRender.filter(item => 
+                    item.title.toLowerCase().includes(q) || 
+                    item.summary.toLowerCase().includes(q) || 
+                    item.example.toLowerCase().includes(q) ||
+                    item.qcm.question.toLowerCase().includes(q)
+                );
+            }
+
+            if (itemsToRender.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-16 bg-slate-900/50 border border-slate-800 rounded-2xl p-6">
+                        <i class="fa-solid fa-triangle-exclamation text-4xl text-amber-500 mb-3"></i>
+                        <h3 class="text-white font-bold text-lg">لم يتم العثور على نتائج مطابقة</h3>
+                        <p class="text-slate-400 text-sm mt-1">جرب البحث بكلمات أخرى أو اختر فصلاً آخر.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            itemsToRender.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl transition hover:border-slate-700";
+                
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-400 border border-blue-500/20">${item.semester}</span>
+                            <h2 class="text-lg font-bold text-white mt-2">${item.title}</h2>
+                        </div>
+                        <button onclick="toggleFavorite('${item.id}')" class="text-slate-400 hover:text-amber-400 transition text-lg p-1">
+                            <i class="fa-regular fa-star" id="star-${item.id}"></i>
+                        </button>
+                    </div>
+
+                    <div class="space-y-3 text-sm text-slate-300">
+                        <div class="bg-slate-950/60 p-3.5 rounded-xl border border-slate-800/80">
+                            <span class="text-xs font-bold text-blue-400 block mb-1"><i class="fa-solid fa-book-open ml-1"></i> الملخص القانوني المركز:</span>
+                            <p class="leading-relaxed">${item.summary}</p>
+                        </div>
+
+                        <div class="bg-slate-950/40 p-3.5 rounded-xl border border-slate-800/60">
+                            <span class="text-xs font-bold text-emerald-400 block mb-1"><i class="fa-solid fa-lightbulb ml-1"></i> مثال تطبيقي وقضائي:</span>
+                            <p class="text-slate-300 leading-relaxed">${item.example}</p>
+                        </div>
+                    </div>
+
+                    <!-- QCM Quiz Box -->
+                    <div class="border-t border-slate-800 pt-4 mt-2">
+                        <div class="font-bold text-xs text-indigo-400 mb-2 flex items-center gap-1">
+                            <i class="fa-solid fa-circle-question"></i> اختبار سريع (QCM):
+                        </div>
+                        <p class="text-sm font-semibold text-white mb-3">${item.qcm.question}</p>
+                        <div class="space-y-2" id="options-${item.id}">
+                            ${item.qcm.options.map((opt, idx) => `
+                                <button onclick="checkAnswer('${item.id}', ${idx},${item.qcm.answer})" class="w-full text-right text-xs p-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 hover:bg-slate-800 transition flex justify-between items-center opt-btn-${item.id}">
+                                    <span>${opt}</span>
+                                    <span class="w-4 h-4 rounded-full border border-slate-600 flex items-center justify-center text-[10px]"></span>
+                                </button>
+                            `).join('')}
+                        </div>
+                        <div id="feedback-${item.id}" class="mt-3 text-xs hidden p-3 rounded-xl"></div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderGlossaryView(container) {
+            container.innerHTML = `
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-book-bookmark text-indigo-400"></i> معجم المصطلحات القانونية (عربي - فرنسي)</h2>
+                        <button onclick="filterSemester('ALL')" class="text-xs text-blue-400 hover:underline">العودة للدروس</button>
+                    </div>
+                    <div class="space-y-3">
+                        ${glossary.map(g => `
+                            <div class="bg-slate-950/60 p-3.5 rounded-xl border border-slate-800/80">
+                                <h3 class="font-bold text-indigo-300 text-sm mb-1">${g.term}</h3>
+                                <p class="text-xs text-slate-300 leading-relaxed">${g.desc}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function filterSemester(sem) {
+            currentFilter = sem;
+            document.querySelectorAll('.sem-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white');
+                btn.classList.add('bg-slate-900', 'border', 'border-slate-700', 'text-slate-300');
+            });
+            event.target.classList.add('bg-blue-600', 'text-white');
+            event.target.classList.remove('bg-slate-900', 'border', 'border-slate-700', 'text-slate-300');
+            renderApp();
+        }
+
+        function showGlossary() {
+            currentFilter = 'GLOSSARY';
+            renderApp();
+        }
+
+        function handleSearch(val) {
+            searchQuery = val;
+            renderApp();
+        }
+
+        function checkAnswer(itemId, selectedIdx, correctIdx) {
+            const feedback = document.getElementById(`feedback-${itemId}`);
+            const buttons = document.querySelectorAll(`.opt-btn-${itemId}`);
+            
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                if (idx === correctIdx) {
+                    btn.classList.add('bg-emerald-950/60', 'border-emerald-600', 'text-emerald-300');
+                } else if (idx === selectedIdx && selectedIdx !== correctIdx) {
+                    btn.classList.add('bg-rose-950/60', 'border-rose-600', 'text-rose-300');
+                }
+            });
+
+            feedback.classList.remove('hidden');
+            let itemObj = [...database.S5, ...database.S6].find(i => i.id === itemId);
+
+            if (selectedIdx === correctIdx) {
+                feedback.className = "mt-3 text-xs p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 font-semibold";
+                feedback.innerHTML = `<i class="fa-solid fa-check-circle ml-1"></i> إجابة صحيحة وصائبة! <br><span class="text-slate-300 mt-1 block font-normal">${itemObj.qcm.explanation}</span>`;
+            } else {
+                feedback.className = "mt-3 text-xs p-3 rounded-xl bg-rose-950/40 border border-rose-500/30 text-rose-300 font-semibold";
+                feedback.innerHTML = `<i class="fa-solid fa-times-circle ml-1"></i> إجابة خاطئة. الإجابة الصحيحة موضحة بالأخضر. <br><span class="text-slate-300 mt-1 block font-normal">${itemObj.qcm.explanation}</span>`;
+            }
+        }
+
+        function toggleFavorite(id) {
+            const star = document.getElementById(`star-${id}`);
+            if (star.classList.contains('fa-regular')) {
+                star.classList.remove('fa-regular');
+                star.classList.add('fa-solid', 'text-amber-400');
+            } else {
+                star.classList.remove('fa-solid', 'text-amber-400');
+                star.classList.add('fa-regular');
+            }
+        }
+
+        function openApkGuide() {
+            document.getElementById('apkModal').classList.remove('hide');
+        }
+
+        function closeApkGuide() {
+            document.getElementById('apkModal').classList.add('hide');
+        }
+
+        // Initial Render
+        renderApp();
+    </script>
+</body>
+</html>
